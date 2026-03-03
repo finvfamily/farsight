@@ -6,6 +6,14 @@
 
 ---
 
+## 界面预览
+
+![首页 — 场景入口](./docs/screenshot-home.jpg)
+
+![调研报告 — 内联引用 + 来源面板](./docs/screenshot-report.jpg)
+
+---
+
 ## 功能特性
 
 - **深度调研** — 自动分解问题、多轮搜索、全文抓取、提取洞察、生成报告
@@ -74,7 +82,7 @@ docker-compose up
 |------|------|------|
 | `ANTHROPIC_API_KEY` | ✅ | [获取](https://console.anthropic.com/) |
 | `TAVILY_API_KEY` | ✅ | 搜索 API，[获取](https://tavily.com/)（免费 1000次/月） |
-| `MINIMAX_API_KEY` | 可选 | MiniMax M2.5，不填则全部走 Claude |
+| `MINIMAX_API_KEY` | 可选 | MiniMax M2.5[获取](https://platform.minimaxi.com/subscribe/coding-plan?code=IdcuuMY7Wl&source=link) |
 
 ## 添加新 Skill
 
