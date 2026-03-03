@@ -40,14 +40,14 @@ lib/
 │   └── scheduler.ts      # 按阶段并行执行 Skills
 ├── skills/               # 可插拔技能模块（社区可贡献）
 │   ├── web-search.ts     #   Tavily 搜索
-│   ├── web-scraper.ts    #   Playwright 全文抓取
+│   ├── http-scraper.ts   #   纯 HTTP 抓取（无浏览器依赖）
 │   ├── key-extractor.ts  #   洞察提取
 │   ├── report-generator.ts
 │   └── matrix-builder.ts
 ├── llm/
-│   └── adapter.ts        # Claude / MiniMax 统一接口，含 JSON 解析重试
+│   └── adapter.ts        # MiniMax / Claude 统一接口，含 JSON 解析重试
 └── db/
-    └── index.ts          # better-sqlite3 历史持久化
+    └── index.ts          # JSON 文件历史持久化
 ```
 
 执行流水线：`collect` → `parse` → `analyze` → `output`，同阶段任务并行执行。
@@ -62,7 +62,6 @@ lib/
 git clone https://github.com/finvfamily/farsight
 cd farsight
 pnpm install
-pnpm playwright install chromium   # 安装爬虫内核
 cp .env.local.example .env.local   # 填入 API Key
 pnpm dev
 ```
@@ -80,9 +79,10 @@ docker-compose up
 
 | 变量 | 必填 | 说明 |
 |------|------|------|
-| `ANTHROPIC_API_KEY` | ✅ | [获取](https://console.anthropic.com/) |
+| `MINIMAX_API_KEY` | ✅ | 默认 LLM — MiniMax M2.5，[获取](https://platform.minimaxi.com/) |
 | `TAVILY_API_KEY` | ✅ | 搜索 API，[获取](https://tavily.com/)（免费 1000次/月） |
-| `MINIMAX_API_KEY` | 可选 | MiniMax M2.5[获取](https://platform.minimaxi.com/subscribe/coding-plan?code=IdcuuMY7Wl&source=link) |
+| `ANTHROPIC_API_KEY` | 可选 | Claude — 规划与合成质量更高，[获取](https://console.anthropic.com/) |
+| `LLM_PROVIDER` | 可选 | 强制指定模型：`minimax` 或 `claude`（不填则按任务类型自动路由） |
 
 ## 添加新 Skill
 
@@ -109,7 +109,7 @@ export default {
 
 ## Roadmap
 
-- [ ] 创业者场景入口（市场调研 / 竞品分析 / 融资准备）
+- [x] 创业者场景入口（市场调研 / 竞品分析 / 融资准备）
 - [ ] 移动端适配
 - [ ] PDF 导出
 - [ ] 用户登录 / 多用户历史隔离

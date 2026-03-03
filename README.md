@@ -40,12 +40,12 @@ lib/
 │   └── scheduler.ts      # Parallel skill execution by stage
 ├── skills/               # Pluggable skill modules (community contributions welcome)
 │   ├── web-search.ts     #   Tavily web search
-│   ├── web-scraper.ts    #   Playwright full-page scraping
+│   ├── http-scraper.ts   #   Pure HTTP scraping (no browser)
 │   ├── key-extractor.ts  #   Insight extraction
 │   ├── report-generator.ts
 │   └── matrix-builder.ts
 ├── llm/
-│   └── adapter.ts        # Unified Claude / MiniMax adapter with JSON retry
+│   └── adapter.ts        # Unified MiniMax / Claude adapter with JSON retry
 └── db/
     └── index.ts          # JSON file history persistence
 ```
@@ -62,7 +62,6 @@ Execution pipeline: `collect` → `parse` → `analyze` → `output`. Tasks with
 git clone https://github.com/finvfamily/farsight
 cd farsight
 pnpm install
-pnpm playwright install chromium   # install browser for scraping
 cp .env.local.example .env.local   # fill in your API keys
 pnpm dev
 ```
@@ -80,9 +79,10 @@ docker-compose up
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | ✅ | [Get one](https://console.anthropic.com/) |
+| `MINIMAX_API_KEY` | ✅ | Default LLM — MiniMax M2.5, [Get one](https://platform.minimaxi.com/) |
 | `TAVILY_API_KEY` | ✅ | Web search API — [Get one](https://tavily.com/) (1,000 free calls/month) |
-| `MINIMAX_API_KEY` | Optional | MiniMax M2.5 for extraction tasks — [Get one](https://platform.minimaxi.com/) |
+| `ANTHROPIC_API_KEY` | Optional | Claude — higher quality planning & synthesis, [Get one](https://console.anthropic.com/) |
+| `LLM_PROVIDER` | Optional | Force a specific provider: `minimax` or `claude` (auto-routes by task type if unset) |
 
 ## Adding a New Skill
 
