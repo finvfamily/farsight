@@ -1,92 +1,92 @@
 # Farsight
 
-> **AI Research for Founders** — 专为创业者打造的 AI 深度调研工具。输入一个问题，自动完成搜索 → 抓取 → 分析 → 报告全流程。
+> **AI Research for Founders** — A deep research tool that works like a full analyst team. Ask a question, get a structured report — automatically.
 
-中文 · [English](./README.en.md)
-
----
-
-## 界面预览
-
-![首页 — 场景入口](./docs/screenshot-home.jpg)
-
-![调研报告 — 内联引用 + 来源面板](./docs/screenshot-report.jpg)
+English · [中文](./README.zh.md)
 
 ---
 
-## 功能特性
+## Screenshots
 
-- **深度调研** — 自动分解问题、多轮搜索、全文抓取、提取洞察、生成报告
-- **竞品分析** — 识别对比意图，自动生成结构化竞品对比矩阵
-- **上下文追问** — 基于上次调研结果继续深挖（精炼 / 扩展 / 全新三种模式）
-- **内联引用** — 报告中 `[n]` 标注可点击，高亮对应来源
-- **历史记录** — SQLite 本地持久化，跨会话保留所有调研历史
-- **分享链接** — 一键生成只读分享页 `/r/[id]`
-- **导出 Markdown** — 一键下载完整报告（含竞品矩阵、来源列表）
+![Homepage — Scenario entry points](./docs/screenshot-home.jpg)
 
-## 架构
+![Research report — Inline citations + source panel](./docs/screenshot-report.jpg)
+
+---
+
+## Features
+
+- **Deep Research** — Automatically decomposes questions, runs multi-round searches, scrapes full pages, extracts insights, and generates a structured report
+- **Competitor Analysis** — Detects comparison intent and builds a structured competitor matrix automatically
+- **Follow-up Questions** — Continue digging based on previous results (refine / expand / new topic modes)
+- **Inline Citations** — Every `[n]` in the report is clickable and scrolls to the matching source
+- **History** — Research sessions persisted locally, accessible across page reloads
+- **Share Links** — One-click read-only share page at `/r/[id]`
+- **Markdown Export** — Download the full report including competitor matrix and source list
+
+## Architecture
 
 ```
 app/
-├── page.tsx              # 主界面（SSE 消费 / 报告渲染 / 历史记录）
-├── r/[id]/page.tsx       # 只读分享页（Server Component）
+├── page.tsx              # Main UI (SSE consumer / report renderer / history)
+├── r/[id]/page.tsx       # Read-only share page (Server Component)
 └── api/
-    ├── research/         # 调研 SSE 流
-    └── history/          # 历史记录 CRUD
+    ├── research/         # Research SSE stream
+    └── history/          # History CRUD
 
 lib/
 ├── engine/
-│   ├── planner.ts        # LLM 生成研究计划
-│   └── scheduler.ts      # 按阶段并行执行 Skills
-├── skills/               # 可插拔技能模块（社区可贡献）
-│   ├── web-search.ts     #   Tavily 搜索
-│   ├── web-scraper.ts    #   Playwright 全文抓取
-│   ├── key-extractor.ts  #   洞察提取
+│   ├── planner.ts        # LLM-generated research plan
+│   └── scheduler.ts      # Parallel skill execution by stage
+├── skills/               # Pluggable skill modules (community contributions welcome)
+│   ├── web-search.ts     #   Tavily web search
+│   ├── web-scraper.ts    #   Playwright full-page scraping
+│   ├── key-extractor.ts  #   Insight extraction
 │   ├── report-generator.ts
 │   └── matrix-builder.ts
 ├── llm/
-│   └── adapter.ts        # Claude / MiniMax 统一接口，含 JSON 解析重试
+│   └── adapter.ts        # Unified Claude / MiniMax adapter with JSON retry
 └── db/
-    └── index.ts          # better-sqlite3 历史持久化
+    └── index.ts          # JSON file history persistence
 ```
 
-执行流水线：`collect` → `parse` → `analyze` → `output`，同阶段任务并行执行。
+Execution pipeline: `collect` → `parse` → `analyze` → `output`. Tasks within the same stage run in parallel.
 
-## 快速开始
+## Getting Started
 
-### 本地开发
+### Local Development
 
-**环境要求：** Node.js 20+、pnpm
+**Requirements:** Node.js 20+, pnpm
 
 ```bash
 git clone https://github.com/finvfamily/farsight
 cd farsight
 pnpm install
-pnpm playwright install chromium   # 安装爬虫内核
-cp .env.local.example .env.local   # 填入 API Key
+pnpm playwright install chromium   # install browser for scraping
+cp .env.local.example .env.local   # fill in your API keys
 pnpm dev
 ```
 
-打开 [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000)
 
-### Docker 一键启动
+### Docker
 
 ```bash
-cp .env.local.example .env.local   # 填入 API Key
+cp .env.local.example .env.local   # fill in your API keys
 docker-compose up
 ```
 
-## 环境变量
+## Environment Variables
 
-| 变量 | 必填 | 说明 |
-|------|------|------|
-| `ANTHROPIC_API_KEY` | ✅ | [获取](https://console.anthropic.com/) |
-| `TAVILY_API_KEY` | ✅ | 搜索 API，[获取](https://tavily.com/)（免费 1000次/月） |
-| `MINIMAX_API_KEY` | 可选 | MiniMax M2.5[获取](https://platform.minimaxi.com/subscribe/coding-plan?code=IdcuuMY7Wl&source=link) |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `ANTHROPIC_API_KEY` | ✅ | [Get one](https://console.anthropic.com/) |
+| `TAVILY_API_KEY` | ✅ | Web search API — [Get one](https://tavily.com/) (1,000 free calls/month) |
+| `MINIMAX_API_KEY` | Optional | MiniMax M2.5 for extraction tasks — [Get one](https://platform.minimaxi.com/) |
 
-## 添加新 Skill
+## Adding a New Skill
 
-Skills 是系统的核心扩展点，每个 Skill 是一个独立模块：
+Skills are the core extension point. Each skill is a self-contained module:
 
 ```typescript
 // lib/skills/my-skill.ts
@@ -97,28 +97,28 @@ export default {
     inputs: Record<string, unknown>,
     ctx: ReturnType<typeof buildContext>
   ) {
-    // 你的实现
+    // your implementation
     return { result: '...' }
   },
 }
 ```
 
-在 `lib/engine/scheduler.ts` 的 `SKILL_MAP` 中注册后，Planner 就能自动调度它。
+Register it in `SKILL_MAP` inside `lib/engine/scheduler.ts` and the Planner will automatically schedule it.
 
-详见 [CONTRIBUTING.md](./CONTRIBUTING.md)
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for full details.
 
 ## Roadmap
 
-- [ ] 创业者场景入口（市场调研 / 竞品分析 / 融资准备）
-- [ ] 移动端适配
-- [ ] PDF 导出
-- [ ] 用户登录 / 多用户历史隔离
-- [ ] Skill 扩展：企查查、App Store 评论、36氪 RSS
-- [ ] 持续跟踪（赛道动态订阅推送）
+- [x] Scenario entry points (market research / competitor analysis / funding prep)
+- [ ] Mobile responsive layout
+- [ ] PDF export
+- [ ] User auth / per-user history
+- [ ] New skills: company registry data, App Store reviews, tech news RSS
+- [ ] Continuous tracking — subscribe to a topic and get weekly updates
 
-## 贡献
+## Contributing
 
-欢迎提交 PR！详见 [CONTRIBUTING.md](./CONTRIBUTING.md)
+PRs are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) to get started.
 
 ## License
 
