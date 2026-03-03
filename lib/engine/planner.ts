@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { llmCall, selectProvider } from '@/lib/llm/adapter'
-import { ResearchPlan, FollowUpContext } from '@/types'
+import { ResearchPlan, ResearchTask, FollowUpContext } from '@/types'
 
 const PlanSchema = z.object({
   intent: z.enum(['topic_research', 'competitor_analysis']),
@@ -65,7 +65,7 @@ export async function plan(
       id: q.id,
       question: q.question,
       skill_names: [q.skill],
-      stage: 'collect' as const,   // SKILL_STAGE_OVERRIDE will fix this
+      stage: 'collect' as ResearchTask['stage'],   // SKILL_STAGE_OVERRIDE will fix this
       inputs: {},
       status: 'pending' as const,
     }))

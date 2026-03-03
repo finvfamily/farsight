@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "app/api/research/route.ts": {
+      "maxDuration": 120
+    }
+  }
+}

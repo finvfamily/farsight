@@ -24,18 +24,6 @@ export function selectProvider(taskType: 'planning' | 'extraction' | 'synthesis'
   return process.env.MINIMAX_API_KEY ? 'minimax' : 'claude'
 }
 
-// 结构化调用：返回 JSON，强制 schema 约束
-export async function llmCall<T>(
-  messages: LLMMessage[],
-  options: LLMCallOptions & { schema: z.ZodType<T> }
-): Promise<T>
-
-// 自由文本调用
-export async function llmCall(
-  messages: LLMMessage[],
-  options?: LLMCallOptions & { schema?: undefined }
-): Promise<string>
-
 // 用平衡括号计数法提取响应中第一个完整 JSON 对象/数组
 // 比贪婪正则更可靠：不会把多个 JSON 对象合并，也不会被对象后面的说明文字干扰
 function extractFirstJSON(text: string): string | null {
@@ -83,6 +71,18 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 2): Promise<T> {
   }
   throw new Error('unreachable')
 }
+
+// 结构化调用：返回 JSON，强制 schema 约束
+export async function llmCall<T>(
+  messages: LLMMessage[],
+  options: LLMCallOptions & { schema: z.ZodType<T> }
+): Promise<T>
+
+// 自由文本调用
+export async function llmCall(
+  messages: LLMMessage[],
+  options?: LLMCallOptions & { schema?: undefined }
+): Promise<string>
 
 export async function llmCall<T>(
   messages: LLMMessage[],
