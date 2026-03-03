@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local
+    volumes:
+      # Persist history across container restarts
+      - ./data:/app/data
+    environment:
+      - DB_PATH=/app/data/research-history.json
+    restart: unless-stopped

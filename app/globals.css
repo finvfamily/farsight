@@ -24,3 +24,13 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes sourceFlash {
+  0%   { background-color: rgba(139, 92, 246, 0.25); }
+  100% { background-color: transparent; }
+}
+
+.source-highlight {
+  animation: sourceFlash 1.2s ease-out forwards;
+  border-radius: 8px;
+}
